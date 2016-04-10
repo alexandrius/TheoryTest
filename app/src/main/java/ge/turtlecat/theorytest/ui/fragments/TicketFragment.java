@@ -14,11 +14,9 @@ import android.widget.TextView;
 
 import ge.turtlecat.theorytest.R;
 import ge.turtlecat.theorytest.bean.Ticket;
-import ge.turtlecat.theorytest.ui.App;
+import ge.turtlecat.theorytest.ui.tools.Tools;
 import ge.turtlecat.theorytest.ui.activities.FullScreenImageActivity;
 import ge.turtlecat.theorytest.ui.activities.TicketFragmentPagerActivity;
-import ge.turtlecat.theorytest.ui.tm.TicketManager;
-import ge.turtlecat.theorytest.ui.tools.Tools;
 
 /**
  * Created by Alex on 11/21/2015.
@@ -43,7 +41,6 @@ public class TicketFragment extends BaseFragment implements View.OnClickListener
 
     @Override
     protected void onCreate() {
-
         ticketLayout = (LinearLayout) findViewById(R.id.ticket_layout);
         currentTicket = tm.getCurrentTickets().get(getArguments().getInt("ticket"));
         ticketImage = (ImageView) findViewById(R.id.ticket_question_image);
@@ -77,7 +74,6 @@ public class TicketFragment extends BaseFragment implements View.OnClickListener
             ticketImage.setVisibility(View.GONE);
         }
 
-
     }
 
     private void markButtons(int clicked) {
@@ -92,14 +88,10 @@ public class TicketFragment extends BaseFragment implements View.OnClickListener
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
-
         wrongAnswers = ((TicketFragmentPagerActivity) getActivity()).isWrongAnswers();
-
         if (currentTicket.getAnswered() != -1) {
             markButtons(currentTicket.getAnswered());
         }
-
     }
 
     @Override

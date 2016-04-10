@@ -3,7 +3,6 @@ package ge.turtlecat.theorytest.ui.tools;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
-import android.util.Log;
 
 import ge.turtlecat.theorytest.ui.App;
 
@@ -17,6 +16,7 @@ public class Settings {
     private static final String SHOW_ANSWERED = "SHOW_ANSWERED";
     private static final String LAST_TICKET_IDS = "LAST_TICKET_IDS";
     private static final String LAST_TICKET_INDEX = "LAST_TICKET_INDEX";
+    private static final String SHOULD_REPEAT = "SHOULD_REPEAT";
 
     static {
         prefs = PreferenceManager.getDefaultSharedPreferences(App.getInstance());
@@ -45,7 +45,6 @@ public class Settings {
 
     public static String[] getLastTicketIds() {
         String lastTickets = prefs.getString(LAST_TICKET_IDS, "");
-        Log.d("lastTickets", lastTickets);
 
         String[] ids = null;
         if (!TextUtils.isEmpty(lastTickets))
@@ -58,6 +57,15 @@ public class Settings {
     public static void setLastTicketIndex(int index) {
         prefsEditor.putInt(LAST_TICKET_INDEX, index);
         commit();
+    }
+
+    public static void repeatCorrectAnswers(boolean shouldRepeat) {
+        prefsEditor.putBoolean(SHOULD_REPEAT, shouldRepeat);
+        commit();
+    }
+
+    public static boolean repeatCorrectAnswers() {
+        return prefs.getBoolean(SHOULD_REPEAT, false);
     }
 
     public static int getLastTicketIndex() {

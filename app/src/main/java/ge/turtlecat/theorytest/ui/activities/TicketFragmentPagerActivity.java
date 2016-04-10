@@ -7,6 +7,7 @@ import ge.turtlecat.theorytest.R;
 import ge.turtlecat.theorytest.bean.Ticket;
 import ge.turtlecat.theorytest.ui.App;
 import ge.turtlecat.theorytest.ui.components.TicketPager;
+import ge.turtlecat.theorytest.ui.tm.TicketManager;
 import ge.turtlecat.theorytest.ui.tools.Settings;
 
 /**
@@ -49,16 +50,16 @@ public class TicketFragmentPagerActivity extends BaseActivity implements ViewPag
 
     @Override
     protected void onCreate() {
-
         wrongAnswers = getIntent().getBooleanExtra("wrongAnswers", false);
         corrAnswerCountTV = (TextView) findViewById(R.id.corr_answer_count);
         wrongAnswerCountTV = (TextView) findViewById(R.id.wrong_answer_count);
         ticketPager = (TicketPager) findViewById(R.id.ticket_view);
         currentPageTV = (TextView) findViewById(R.id.current_page);
-        currentPageTV.setText("1/" + App.getInstance().getCurrentTickets().size());
+        currentPageTV.setText("1/" + TicketManager.getInstance().getCurrentTickets().size());
         ticketPager.addOnPageChangeListener(this);
         ticketPager.setFM(getSupportFragmentManager());
-        ticketPager.setCurrentItem(Settings.getLastTicketIndex());
+        if (getIntent().getBooleanExtra("lastTest", false))
+            ticketPager.setCurrentItem(Settings.getLastTicketIndex());
     }
 
     @Override
@@ -69,7 +70,7 @@ public class TicketFragmentPagerActivity extends BaseActivity implements ViewPag
     @Override
     public void onPageSelected(int position) {
         int displayPos = position + 1;
-        currentPageTV.setText(displayPos + "/" + App.getInstance().getCurrentTickets().size());
+        currentPageTV.setText(displayPos + "/" + TicketManager.getInstance().getCurrentTickets().size());
     }
 
     @Override
@@ -81,14 +82,11 @@ public class TicketFragmentPagerActivity extends BaseActivity implements ViewPag
     protected void onPause() {
         super.onPause();
         if (!isWrongAnswers()) {
-
             if (wrongAnswerCount + corrAnswerCount < 30) {
-
                 String lastTickets = "";
-                for (Ticket ticket : App.getInstance().getCurrentTickets()) {
+                for (Ticket ticket : TicketManager.getInstance().getCurrentTickets()) {
                     lastTickets = lastTickets + ticket.getId() + ",";
                 }
-
                 Settings.setLastTicketIds(lastTickets);
                 Settings.setLastTicketIndex(ticketPager.getCurrentItem());
             } else {

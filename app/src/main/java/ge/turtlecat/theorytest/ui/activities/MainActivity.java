@@ -39,7 +39,6 @@ public class MainActivity extends BaseActivity implements TicketLoadListener {
     @Override
     protected void onResume() {
         super.onResume();
-
         if (Settings.getLastTicketIds() == null) {
             continueButton.setVisibility(View.GONE);
         } else {
@@ -57,6 +56,7 @@ public class MainActivity extends BaseActivity implements TicketLoadListener {
         if (tm.loadWrongTickets()) {
             Intent i = new Intent(this, TicketFragmentPagerActivity.class);
             i.putExtra("wrongAnswers", true);
+            i.putExtra("lastTest", false);
             startActivity(i);
         } else {
             Tools.showToast("თქვენ არ გაქვთ შეცდომები");
@@ -65,17 +65,26 @@ public class MainActivity extends BaseActivity implements TicketLoadListener {
 
     public void continueLastTest(View view) {
         if (tm.loadLastTestTickets()) {
-            Intent i = new Intent(MainActivity.this, TicketFragmentPagerActivity.class);
+            Intent i = new Intent(this, TicketFragmentPagerActivity.class);
             i.putExtra("wrongAnswers", false);
+            i.putExtra("lastTest", true);
             startActivity(i);
         }
     }
 
     @Override
     public void onTicketsLoaded() {
-        progressDialog.hide();
-        Intent i = new Intent(MainActivity.this, TicketFragmentPagerActivity.class);
-        i.putExtra("wrongAnswers", false);
-        startActivity(i);
+        runOnUiThread(ticketsLoadedRunnable);
     }
+
+    Runnable ticketsLoadedRunnable = new Runnable() {
+        @Override
+        public void run() {
+            progressDialog.hide();
+            Intent i = new Intent(MainActivity.this, TicketFragmentPagerActivity.class);
+            i.putExtra("wrongAnswers", false);
+            i.putExtra("lastTest", false);
+            startActivity(i);
+        }
+    };
 }
