@@ -61,13 +61,13 @@ public class TicketFragment extends BaseFragment implements View.OnClickListener
             button.setTextColor(Color.BLACK);
             button.setText(currentTicket.getAnswerArray()[i]);
             buttons[i] = button;
-
-            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
-            SharedPreferences.Editor editor = preferences.edit();
-            editor.putString("Description", currentTicket.getDescription());
-            editor.apply();
         }
-
+        ////description
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString("Description", currentTicket.getDescription());
+        editor.apply();
+/////
         if (!TextUtils.isEmpty(currentTicket.getImg())) {
             Bitmap b = Tools.getBitmapFromAssets(getContext(), currentTicket.getImg());
 

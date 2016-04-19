@@ -2,6 +2,7 @@ package ge.turtlecat.theorytest.ui.activities;
 
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
@@ -64,6 +65,7 @@ public class TicketFragmentPagerActivity extends BaseActivity implements ViewPag
         //AppCompatActivity activity = (AppCompatActivity) getActivity();
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
         descriptionButton = (Button) findViewById(R.id.description_button);
         description_layout = (FrameLayout) findViewById(R.id.description_layout);
         wrongAnswers = getIntent().getBooleanExtra("wrongAnswers", false);
@@ -154,5 +156,23 @@ public class TicketFragmentPagerActivity extends BaseActivity implements ViewPag
             return title;
         }
 
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()) {
+
+            case android.R.id.home:
+                //  overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
+                onBackPressed();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
     }
 }
