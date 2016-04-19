@@ -1,9 +1,11 @@
 package ge.turtlecat.theorytest.ui.fragments;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,7 +30,6 @@ public class TicketFragment extends BaseFragment implements View.OnClickListener
     private LinearLayout ticketLayout;
     private Button[] buttons;
     private ImageView ticketImage;
-
     //TODO: კოდი ბინძურია, ესაჭიროება დასუფთავება
 
     private boolean wrongAnswers;
@@ -41,6 +42,7 @@ public class TicketFragment extends BaseFragment implements View.OnClickListener
 
     @Override
     protected void onCreate() {
+        // descriptionButton=(Button)findViewById(R.id.description_button);
         ticketLayout = (LinearLayout) findViewById(R.id.ticket_layout);
         currentTicket = tm.getCurrentTickets().get(getArguments().getInt("ticket"));
         ticketImage = (ImageView) findViewById(R.id.ticket_question_image);
@@ -59,6 +61,11 @@ public class TicketFragment extends BaseFragment implements View.OnClickListener
             button.setTextColor(Color.BLACK);
             button.setText(currentTicket.getAnswerArray()[i]);
             buttons[i] = button;
+
+            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+            SharedPreferences.Editor editor = preferences.edit();
+            editor.putString("Description", currentTicket.getDescription());
+            editor.apply();
         }
 
         if (!TextUtils.isEmpty(currentTicket.getImg())) {
@@ -73,7 +80,6 @@ public class TicketFragment extends BaseFragment implements View.OnClickListener
         } else {
             ticketImage.setVisibility(View.GONE);
         }
-
     }
 
     private void markButtons(int clicked) {
