@@ -17,6 +17,8 @@ public class Settings {
     private static final String LAST_TICKET_IDS = "LAST_TICKET_IDS";
     private static final String LAST_TICKET_INDEX = "LAST_TICKET_INDEX";
     private static final String SHOULD_REPEAT = "SHOULD_REPEAT";
+    private static final String CORR_AMOUNT = "CORR_AMOUNT";
+    private static final String WRONG_AMOUNT = "WRONG_AMOUNT";
 
     static {
         prefs = PreferenceManager.getDefaultSharedPreferences(App.getInstance());
@@ -41,6 +43,24 @@ public class Settings {
     public static void setLastTicketIds(String ids) {
         prefsEditor.putString(LAST_TICKET_IDS, ids);
         commit();
+    }
+
+    public static void saveLastTicketCorrectAmount(int amount){
+        prefsEditor.putInt(CORR_AMOUNT, amount);
+        commit();
+    }
+
+    public static int getLastTicketCorrectAmount(){
+        return prefs.getInt(CORR_AMOUNT, 0);
+    }
+
+    public static void saveLastTicketWrongAmount(int amount){
+        prefsEditor.putInt(WRONG_AMOUNT, amount);
+        commit();
+    }
+
+    public static int getLastTicketWrongAmount(){
+        return prefs.getInt(WRONG_AMOUNT, 0);
     }
 
     public static String[] getLastTicketIds() {

@@ -88,14 +88,14 @@ public class TicketFragment extends BaseFragment implements View.OnClickListener
         for (Button b : buttons) {
             b.setEnabled(false);
         }
-
     }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         wrongAnswers = ((TicketFragmentPagerActivity) getActivity()).isWrongAnswers();
-        if (currentTicket.getAnswered() != -1) {
+        boolean test = ((TicketFragmentPagerActivity) getActivity()).isWrongTest();
+        if (currentTicket.getAnswered() != -1 && !test) {
             markButtons(currentTicket.getAnswered());
         }
     }

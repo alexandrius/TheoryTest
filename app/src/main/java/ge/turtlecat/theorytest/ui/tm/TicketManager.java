@@ -25,6 +25,11 @@ public class TicketManager {
         return instance;
     }
 
+    public int getDoneAmount(){
+        List<Ticket> tkts = Ticket.findWithQuery(Ticket.class, TICKET_QUERY + " answered != '-1'");
+        return tkts.size();
+    }
+
     public List<Ticket> getCurrentTickets() {
         return currentTickets;
     }
@@ -33,11 +38,12 @@ public class TicketManager {
         this.currentTickets = currentTickets;
     }
 
-    public void loadTestTickets(final TicketLoadListener ticketsLoaded) {
+    public void loadTestTickets(final TicketLoadListener ticketsLoaded, final boolean full) {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                List<Ticket> tmpTkts = Ticket.findWithQuery(Ticket.class, TICKET_QUERY + " answered = '-1'");
+                String q = full ? "" : " answered = '-1'";
+                List<Ticket> tmpTkts = Ticket.findWithQuery(Ticket.class, TICKET_QUERY + q);
                 List<Ticket> tickets = new ArrayList<>();
                 tickets.addAll(tmpTkts);
                 if (tmpTkts.size() > TEST_TICKET_AMOUNT) {

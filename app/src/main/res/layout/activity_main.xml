@@ -21,6 +21,12 @@
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:onClick="startTestFull"
+        android:text="სრული ტესტის დაწყება" />
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:onClick="startTest"
         android:text="@string/start_test" />
 
@@ -30,5 +36,17 @@
         android:layout_height="wrap_content"
         android:onClick="wrongAnswered"
         android:text="@string/errors" />
+
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="wrongTest"
+        android:text="ტესტი შეცდომებში" />
+
+    <TextView
+        android:id="@+id/done_amount"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 
 </LinearLayout>

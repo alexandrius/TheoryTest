@@ -22,6 +22,7 @@ public class Ticket extends SugarRecord {
 
     }
 
+
     public Ticket(String img, String question, String description, int topic, String answers, int corrAnswer, int answered) {
         this.img = img;
         this.question = question;

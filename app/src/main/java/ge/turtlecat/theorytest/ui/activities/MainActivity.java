@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
 import ge.turtlecat.theorytest.R;
 import ge.turtlecat.theorytest.ui.tm.TicketLoadListener;
@@ -15,8 +16,7 @@ public class MainActivity extends BaseActivity implements TicketLoadListener {
 
     private Button continueButton;
     private ProgressDialog progressDialog;
-
-    //TODO: ტესტი შეცდომების ტესტი
+    private TextView doneAmountTV;
 
     @Override
     protected int getLayoutId() {
@@ -26,10 +26,13 @@ public class MainActivity extends BaseActivity implements TicketLoadListener {
     @Override
     protected void onCreate() {
         continueButton = (Button) findViewById(R.id.continue_last_test_button);
+        doneAmountTV = (TextView) findViewById(R.id.done_amount);
         progressDialog = new ProgressDialog(this);
         progressDialog.setMessage("მიმდინარეობს ჩატვირთვა");
         progressDialog.setCancelable(false);
+
     }
+
 
     @Override
     protected void onDestroy() {
@@ -39,6 +42,7 @@ public class MainActivity extends BaseActivity implements TicketLoadListener {
     @Override
     protected void onResume() {
         super.onResume();
+        doneAmountTV.setText(tm.getDoneAmount() + "/1032");
         if (Settings.getLastTicketIds() == null) {
             continueButton.setVisibility(View.GONE);
         } else {
@@ -48,7 +52,7 @@ public class MainActivity extends BaseActivity implements TicketLoadListener {
 
     public void startTest(View view) {
         progressDialog.show();
-        tm.loadTestTickets(this);
+        tm.loadTestTickets(this, false);
     }
 
 
@@ -56,12 +60,14 @@ public class MainActivity extends BaseActivity implements TicketLoadListener {
         if (tm.loadWrongTickets()) {
             Intent i = new Intent(this, TicketFragmentPagerActivity.class);
             i.putExtra("wrongAnswers", true);
+            i.putExtra("test", false);
             i.putExtra("lastTest", false);
             startActivity(i);
         } else {
             Tools.showToast("თქვენ არ გაქვთ შეცდომები");
         }
     }
+
 
     public void continueLastTest(View view) {
         if (tm.loadLastTestTickets()) {
@@ -87,4 +93,21 @@ public class MainActivity extends BaseActivity implements TicketLoadListener {
             startActivity(i);
         }
     };
+
+    public void wrongTest(View view) {
+        if (tm.loadWrongTickets()) {
+            Intent i = new Intent(this, TicketFragmentPagerActivity.class);
+            i.putExtra("wrongAnswers", true);
+            i.putExtra("test", true);
+            i.putExtra("lastTest", false);
+            startActivity(i);
+        } else {
+            Tools.showToast("თქვენ არ გაქვთ შეცდომები");
+        }
+    }
+
+    public void startTestFull(View view) {
+        progressDialog.show();
+        tm.loadTestTickets(this, true);
+    }
 }

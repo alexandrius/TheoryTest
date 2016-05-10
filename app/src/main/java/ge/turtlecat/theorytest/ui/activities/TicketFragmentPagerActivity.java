@@ -25,6 +25,7 @@ import ge.turtlecat.theorytest.ui.tools.Settings;
 public class TicketFragmentPagerActivity extends BaseActivity implements ViewPager.OnPageChangeListener {
     private TicketPager ticketPager;
     private boolean wrongAnswers;
+    private boolean wrongTest;
     private int corrAnswerCount, wrongAnswerCount;
     private TextView currentPageTV, corrAnswerCountTV, wrongAnswerCountTV;
     private Button descriptionButton;
@@ -35,6 +36,9 @@ public class TicketFragmentPagerActivity extends BaseActivity implements ViewPag
         return wrongAnswers;
     }
 
+    public boolean isWrongTest() {
+        return wrongTest;
+    }
 
     public int getCorrAnswerCount() {
         return corrAnswerCount;
@@ -69,6 +73,7 @@ public class TicketFragmentPagerActivity extends BaseActivity implements ViewPag
         descriptionButton = (Button) findViewById(R.id.description_button);
         description_layout = (FrameLayout) findViewById(R.id.description_layout);
         wrongAnswers = getIntent().getBooleanExtra("wrongAnswers", false);
+        wrongTest = getIntent().getBooleanExtra("test", false);
         corrAnswerCountTV = (TextView) findViewById(R.id.corr_answer_count);
         wrongAnswerCountTV = (TextView) findViewById(R.id.wrong_answer_count);
         ticketPager = (TicketPager) findViewById(R.id.ticket_view);
@@ -114,6 +119,17 @@ public class TicketFragmentPagerActivity extends BaseActivity implements ViewPag
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        if(!isWrongAnswers()){
+            wrongAnswerCount = Settings.getLastTicketWrongAmount();
+            corrAnswerCount = Settings.getLastTicketCorrectAmount();
+            setCorrAnswerCount(corrAnswerCount);
+            setWrongAnswerCount(wrongAnswerCount);
+        }
+    }
+
+    @Override
     public void onPageSelected(int position) {
         int displayPos = position + 1;
         currentPageTV.setText(displayPos + "/" + TicketManager.getInstance().getCurrentTickets().size());
@@ -135,6 +151,8 @@ public class TicketFragmentPagerActivity extends BaseActivity implements ViewPag
                 }
                 Settings.setLastTicketIds(lastTickets);
                 Settings.setLastTicketIndex(ticketPager.getCurrentItem());
+                Settings.saveLastTicketCorrectAmount(corrAnswerCount);
+                Settings.saveLastTicketWrongAmount(wrongAnswerCount);
             } else {
                 Settings.setLastTicketIds(null);
             }
