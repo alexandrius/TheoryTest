@@ -16,7 +16,10 @@ public class TicketManager {
     private static TicketManager instance;
     private List<Ticket> currentTickets;
     private static final int TEST_TICKET_AMOUNT = 30;
-    private static String TICKET_QUERY = "select * from TICKET where";
+    private static String TICKET_QUERY = "select * from TICKET";
+    private static String WHERE = "where";
+
+    private static String TICKET_QUERY_WHERE = "select * from TICKET " + WHERE;
 
     public static TicketManager getInstance() {
         if (instance == null) {
@@ -25,8 +28,8 @@ public class TicketManager {
         return instance;
     }
 
-    public int getDoneAmount(){
-        List<Ticket> tkts = Ticket.findWithQuery(Ticket.class, TICKET_QUERY + " answered != '-1'");
+    public int getDoneAmount() {
+        List<Ticket> tkts = Ticket.findWithQuery(Ticket.class, TICKET_QUERY_WHERE + " answered != '-1'");
         return tkts.size();
     }
 
@@ -42,8 +45,10 @@ public class TicketManager {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                String q = full ? "" : " answered = '-1'";
+                String q = full ? "" : " " + WHERE + " answered = '-1'";
+
                 List<Ticket> tmpTkts = Ticket.findWithQuery(Ticket.class, TICKET_QUERY + q);
+
                 List<Ticket> tickets = new ArrayList<>();
                 tickets.addAll(tmpTkts);
                 if (tmpTkts.size() > TEST_TICKET_AMOUNT) {
@@ -69,7 +74,7 @@ public class TicketManager {
 
 
     public boolean loadWrongTickets() {
-        List<Ticket> tkts = Ticket.findWithQuery(Ticket.class, TICKET_QUERY + " answered != corr_answer and answered != '-1'");
+        List<Ticket> tkts = Ticket.findWithQuery(Ticket.class, TICKET_QUERY_WHERE + " answered != corr_answer and answered != '-1'");
         if (tkts.size() > 0) {
             setCurrentTickets(tkts);
             return true;
@@ -82,7 +87,7 @@ public class TicketManager {
         ArrayList<Ticket> tickets = new ArrayList<>();
 
         for (String id : ids) {
-            Ticket tkt = Ticket.findWithQuery(Ticket.class, TICKET_QUERY + " id = '" + id + "'").get(0);
+            Ticket tkt = Ticket.findWithQuery(Ticket.class, TICKET_QUERY_WHERE + " id = '" + id + "'").get(0);
             tickets.add(tkt);
         }
 
