@@ -51,6 +51,7 @@ public class TicketManager {
 
                 List<Ticket> tickets = new ArrayList<>();
                 tickets.addAll(tmpTkts);
+                //if left tickets amount more than TEST_TICKET_AMOUNT
                 if (tmpTkts.size() > TEST_TICKET_AMOUNT) {
                     tickets.clear();
                     int index;
@@ -61,7 +62,17 @@ public class TicketManager {
                                 index++;
                             }
                         }
-                        List<Ticket> tkts = Ticket.find(Ticket.class, "topic = ? and answered = ?", index + "", "-1");
+
+                        List<Ticket> tkts;
+                        while (true) {
+                            tkts = getUnansweredTicketsForTopic(index);
+                            if(index + 1 < TEST_TICKET_AMOUNT){
+                                index++;
+                            }else{
+                                index = 1;
+                            }
+                            if (tkts.size() > 0) break;
+                        }
                         int random = Math.abs(new Random(System.currentTimeMillis()).nextInt()) % tkts.size();
                         tickets.add(tkts.get(random));
                     }
@@ -72,6 +83,10 @@ public class TicketManager {
         }).start();
     }
 
+
+    private List<Ticket> getUnansweredTicketsForTopic(int topic) {
+        return Ticket.find(Ticket.class, "topic = ? and answered = ?", topic + "", "-1");
+    }
 
     public boolean loadWrongTickets() {
         List<Ticket> tkts = Ticket.findWithQuery(Ticket.class, TICKET_QUERY_WHERE + " answered != corr_answer and answered != '-1'");
