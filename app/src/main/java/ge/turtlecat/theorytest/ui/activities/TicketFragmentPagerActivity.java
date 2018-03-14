@@ -12,7 +12,6 @@ import com.ToxicBakery.viewpager.transforms.AccordionTransformer;
 
 import ge.turtlecat.theorytest.R;
 import ge.turtlecat.theorytest.bean.Ticket;
-import ge.turtlecat.theorytest.ui.App;
 import ge.turtlecat.theorytest.ui.components.TicketPager;
 import ge.turtlecat.theorytest.ui.fragments.TiketDescriptionFragment;
 import ge.turtlecat.theorytest.ui.tm.TicketManager;
@@ -30,6 +29,7 @@ public class TicketFragmentPagerActivity extends BaseActivity implements ViewPag
     private TextView currentPageTV, corrAnswerCountTV, wrongAnswerCountTV;
     private Button descriptionButton;
     private FrameLayout description_layout;
+    private Button deleteFromMistakesButton;
     private DescriptionFragmentStatus status;
 
     public boolean isWrongAnswers() {
@@ -65,24 +65,27 @@ public class TicketFragmentPagerActivity extends BaseActivity implements ViewPag
 
     @Override
     protected void onCreate() {
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar =  findViewById(R.id.toolbar);
         //AppCompatActivity activity = (AppCompatActivity) getActivity();
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
-        descriptionButton = (Button) findViewById(R.id.description_button);
-        description_layout = (FrameLayout) findViewById(R.id.description_layout);
+        deleteFromMistakesButton = findViewById(R.id.delete_from_mistakes);
+
+
+        descriptionButton = findViewById(R.id.description_button);
+        description_layout = findViewById(R.id.description_layout);
         wrongAnswers = getIntent().getBooleanExtra("wrongAnswers", false);
         wrongTest = getIntent().getBooleanExtra("test", false);
-        corrAnswerCountTV = (TextView) findViewById(R.id.corr_answer_count);
-        wrongAnswerCountTV = (TextView) findViewById(R.id.wrong_answer_count);
-        ticketPager = (TicketPager) findViewById(R.id.ticket_view);
+        corrAnswerCountTV = findViewById(R.id.corr_answer_count);
+        wrongAnswerCountTV = findViewById(R.id.wrong_answer_count);
+        ticketPager = findViewById(R.id.ticket_view);
         try {
             ticketPager.setPageTransformer(true, new TransformerItem(AccordionTransformer.class).clazz.newInstance());
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-        currentPageTV = (TextView) findViewById(R.id.current_page);
+        currentPageTV = findViewById(R.id.current_page);
         currentPageTV.setText("1/" + TicketManager.getInstance().getCurrentTickets().size());
         ticketPager.addOnPageChangeListener(this);
         ticketPager.setFM(getSupportFragmentManager());
@@ -111,6 +114,16 @@ public class TicketFragmentPagerActivity extends BaseActivity implements ViewPag
                 }
             }
         });
+
+        if (isWrongTest()) {
+            deleteFromMistakesButton.setVisibility(View.VISIBLE);
+            deleteFromMistakesButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    ticketPager.getCurrentFragment().deleteFromMistakes();
+                }
+            });
+        }
     }
 
     @Override
@@ -121,7 +134,7 @@ public class TicketFragmentPagerActivity extends BaseActivity implements ViewPag
     @Override
     protected void onResume() {
         super.onResume();
-        if(!isWrongAnswers()){
+        if (!isWrongAnswers()) {
             wrongAnswerCount = Settings.getLastTicketWrongAmount();
             corrAnswerCount = Settings.getLastTicketCorrectAmount();
             setCorrAnswerCount(corrAnswerCount);
@@ -145,11 +158,11 @@ public class TicketFragmentPagerActivity extends BaseActivity implements ViewPag
         super.onPause();
         if (!isWrongAnswers()) {
             if (wrongAnswerCount + corrAnswerCount < 30) {
-                String lastTickets = "";
+                StringBuilder lastTickets = new StringBuilder();
                 for (Ticket ticket : TicketManager.getInstance().getCurrentTickets()) {
-                    lastTickets = lastTickets + ticket.getId() + ",";
+                    lastTickets.append(ticket.getId()).append(",");
                 }
-                Settings.setLastTicketIds(lastTickets);
+                Settings.setLastTicketIds(lastTickets.toString());
                 Settings.setLastTicketIndex(ticketPager.getCurrentItem());
                 Settings.saveLastTicketCorrectAmount(corrAnswerCount);
                 Settings.saveLastTicketWrongAmount(wrongAnswerCount);
@@ -175,6 +188,7 @@ public class TicketFragmentPagerActivity extends BaseActivity implements ViewPag
         }
 
     }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
@@ -188,6 +202,7 @@ public class TicketFragmentPagerActivity extends BaseActivity implements ViewPag
                 return super.onOptionsItemSelected(item);
         }
     }
+
     @Override
     public void onBackPressed() {
         super.onBackPressed();

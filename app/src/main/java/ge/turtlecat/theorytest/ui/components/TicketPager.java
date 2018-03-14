@@ -28,6 +28,10 @@ public class TicketPager extends CustomViewPager {
 
     }
 
+    public TicketFragment getCurrentFragment() {
+        return fragments[getCurrentItem()];
+    }
+
     private void init() {
         fragments = new TicketFragment[TicketManager.getInstance().getCurrentTickets().size()];
 

@@ -66,9 +66,9 @@ public class TicketManager {
                         List<Ticket> tkts;
                         while (true) {
                             tkts = getUnansweredTicketsForTopic(index);
-                            if(index + 1 < TEST_TICKET_AMOUNT){
+                            if (index + 1 < TEST_TICKET_AMOUNT) {
                                 index++;
-                            }else{
+                            } else {
                                 index = 1;
                             }
                             if (tkts.size() > 0) break;

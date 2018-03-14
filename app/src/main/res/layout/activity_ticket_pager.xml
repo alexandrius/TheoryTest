@@ -17,6 +17,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="განმარტება" />
+
+
+        <Button
+            android:id="@+id/delete_from_mistakes"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:text="X" />
     </android.support.v7.widget.Toolbar>
 
     <FrameLayout
@@ -35,8 +43,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginBottom="100dp"
-            android:background="#00FFFFFF"
-            android:orientation="vertical"></FrameLayout>
+            android:background="#00FFFFFF" />
     </FrameLayout>
 
 

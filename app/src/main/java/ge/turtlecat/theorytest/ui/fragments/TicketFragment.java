@@ -30,7 +30,6 @@ public class TicketFragment extends BaseFragment implements View.OnClickListener
     private LinearLayout ticketLayout;
     private Button[] buttons;
     private ImageView ticketImage;
-    //TODO: კოდი ბინძურია, ესაჭიროება დასუფთავება
 
     private boolean wrongAnswers;
 
@@ -38,6 +37,12 @@ public class TicketFragment extends BaseFragment implements View.OnClickListener
     @Override
     protected int getLayoutId() {
         return R.layout.fragment_ticket;
+    }
+
+
+    public void deleteFromMistakes(){
+        currentTicket.setAnswered(currentTicket.getCorrAnswer());
+        currentTicket.save();
     }
 
     @Override

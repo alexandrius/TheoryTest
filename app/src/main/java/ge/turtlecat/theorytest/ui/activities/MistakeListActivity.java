@@ -20,7 +20,7 @@ public class MistakeListActivity extends BaseActivity {
 
     @Override
     protected void onCreate() {
-        recyclerView = (RecyclerView) findViewById(R.id.mistake_recycler_view);
+        recyclerView = findViewById(R.id.mistake_recycler_view);
         LinearLayoutManager llm = new LinearLayoutManager(this);
         llm.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(llm);
