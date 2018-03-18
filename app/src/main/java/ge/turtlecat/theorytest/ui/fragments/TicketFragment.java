@@ -1,11 +1,13 @@
 package ge.turtlecat.theorytest.ui.fragments;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,12 +15,15 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.google.android.gms.ads.AdView;
 
 import ge.turtlecat.theorytest.R;
 import ge.turtlecat.theorytest.bean.Ticket;
-import ge.turtlecat.theorytest.ui.tools.Tools;
 import ge.turtlecat.theorytest.ui.activities.FullScreenImageActivity;
 import ge.turtlecat.theorytest.ui.activities.TicketFragmentPagerActivity;
+import ge.turtlecat.theorytest.ui.tools.Tools;
 
 /**
  * Created by Alex on 11/21/2015.
@@ -30,6 +35,7 @@ public class TicketFragment extends BaseFragment implements View.OnClickListener
     private LinearLayout ticketLayout;
     private Button[] buttons;
     private ImageView ticketImage;
+    private AdView adView;
 
     private boolean wrongAnswers;
 
@@ -40,13 +46,33 @@ public class TicketFragment extends BaseFragment implements View.OnClickListener
     }
 
 
-    public void deleteFromMistakes(){
-        currentTicket.setAnswered(currentTicket.getCorrAnswer());
-        currentTicket.save();
+    public void deleteFromMistakes() {
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getContext());
+        alertDialogBuilder.setTitle("შეცდომებიდან ამოშლა");
+
+        alertDialogBuilder
+                .setMessage("გსურთ ამ შეკითხვის შეცდომებიდან ამოშლა?")
+                .setCancelable(false)
+                .setPositiveButton("კი", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        Toast.makeText(getContext(), "კითხვა შემდეგ ჯერზე აღარ გამოჩნდება", Toast.LENGTH_SHORT).show();
+                        currentTicket.setAnswered(currentTicket.getCorrAnswer());
+                        currentTicket.save();
+                    }
+                })
+                .setNegativeButton("არა", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+                    }
+                });
+
+        AlertDialog alertDialog = alertDialogBuilder.create();
+        alertDialog.show();
     }
 
     @Override
     protected void onCreate() {
+
         // descriptionButton=(Button)findViewById(R.id.description_button);
         ticketLayout = (LinearLayout) findViewById(R.id.ticket_layout);
         currentTicket = tm.getCurrentTickets().get(getArguments().getInt("ticket"));

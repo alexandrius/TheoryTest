@@ -65,15 +65,15 @@ public class TicketManager {
 
                         List<Ticket> tkts;
                         while (true) {
-                            tkts = getUnansweredTicketsForTopic(index);
-                            if (index + 1 < TEST_TICKET_AMOUNT) {
+                            tkts = getUnansweredTicketsForTopic(index, tickets);
+                            if (index + 1 <= TEST_TICKET_AMOUNT) {
                                 index++;
                             } else {
                                 index = 1;
                             }
                             if (tkts.size() > 0) break;
                         }
-                        int random = Math.abs(new Random(System.currentTimeMillis()).nextInt()) % tkts.size();
+                        int random = Math.abs(new Random().nextInt()) % tkts.size();
                         tickets.add(tkts.get(random));
                     }
                 }
@@ -84,8 +84,20 @@ public class TicketManager {
     }
 
 
-    private List<Ticket> getUnansweredTicketsForTopic(int topic) {
-        return Ticket.find(Ticket.class, "topic = ? and answered = ?", topic + "", "-1");
+    private List<Ticket> getUnansweredTicketsForTopic(int topic, List<Ticket> tkts) {
+        List<Ticket> unAnsweredTickets = Ticket.find(Ticket.class, "topic = ? and answered = ?", topic + "", "-1");
+        for (Ticket tkt : tkts) {
+            Ticket remove = null;
+            for (Ticket unAnsweredTicket : unAnsweredTickets) {
+                if (tkt.getId().longValue() == unAnsweredTicket.getId().longValue()) {
+                    remove = unAnsweredTicket;
+                    break;
+                }
+            }
+            if (remove != null)
+                unAnsweredTickets.remove(remove);
+        }
+        return unAnsweredTickets;
     }
 
     public boolean loadWrongTickets() {

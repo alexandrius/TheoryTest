@@ -9,6 +9,8 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.ToxicBakery.viewpager.transforms.AccordionTransformer;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 
 import ge.turtlecat.theorytest.R;
 import ge.turtlecat.theorytest.bean.Ticket;
@@ -62,9 +64,14 @@ public class TicketFragmentPagerActivity extends BaseActivity implements ViewPag
     protected int getLayoutId() {
         return R.layout.activity_ticket_pager;
     }
+    private AdView adView;
 
     @Override
     protected void onCreate() {
+        adView = (AdView) findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        adView.loadAd(adRequest);
+
         Toolbar toolbar =  findViewById(R.id.toolbar);
         //AppCompatActivity activity = (AppCompatActivity) getActivity();
         setSupportActionBar(toolbar);
